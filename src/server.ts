@@ -1,7 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as firebase from 'firebase-admin';
 import { NextFunction } from 'connect';
 
+const fbconfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../config/firebase.json`)).toString());
+firebase.initializeApp({credential: firebase.credential.cert(fbconfig)});
 dotenv.config();
 
 const app: Express = express();
