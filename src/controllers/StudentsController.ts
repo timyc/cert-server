@@ -16,9 +16,8 @@ export default class StudentsController {
         });
     }
     public async login(req: Request, res: Response) {
-        await firebase.auth().verifyIdToken(req.body.token).then(async (decodedToken) => {
-            let uid = decodedToken.uid;
-            this.sModel.login(uid, (err?: Object, results?: Object) => {
+        await firebase.auth().verifyIdToken(req.body["token"] || "").then(async (decodedToken) => {
+            this.sModel.login(decodedToken, (err?: Object, results?: Object) => {
                 if (err) {
                     return res.status(500).json(err);
                 }
