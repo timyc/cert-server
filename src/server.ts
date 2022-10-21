@@ -14,8 +14,15 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.HTTP_PORT;
+const whitelist = JSON.parse(process.env.CORS_ORIGIN || "[]");
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
     credentials: true,
 })); // allow cross-origin requests
 app.use(bodyParser.json()); // support json encoded bodies
