@@ -26,6 +26,14 @@ export default class StudentsController {
         }).catch((err) => {
             return res.status(500).json({ code: "internal_error", msg: "Failed to log into your account. Please try again." });
         });
-
+    }
+    public async search(req: Request, res: Response) {
+        let lim = parseInt(req.query["limit"] as string) || 0;
+        this.sModel.search(req.query.query as string, lim, (err?: Object, results?: Object) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            return res.status(200).json(results);
+        });
     }
 }

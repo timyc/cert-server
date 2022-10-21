@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import * as jwt from 'jsonwebtoken';
-import connection from './DB'; 
+import connection from '../helpers/DB'; 
 
 export default class StudentsModel {
     public test(result: Function) {
@@ -31,6 +31,16 @@ export default class StudentsModel {
                 const token = jwt.sign({ user: results[0] }, process.env.JWT_SECRET || "poopysecret", { algorithm: 'HS256'});
                 return result(null, { code: "success", msg: {token: token, results: results}});
             }
+        });
+    }
+    public search(ss: string, limit: number, result: Function) {
+        let query = `SELECT id,name FROM universities WHERE name LIKE ? LIMIT ${limit}`;
+        console.log(ss);
+        connection.query(query, [`%${ss}%`], (err, results) => {
+            if (err) {
+                return result({ code: "internal_error", msg: err.message}, null);
+            }
+            return result(null, { code: "success", msg: results});
         });
     }
 }

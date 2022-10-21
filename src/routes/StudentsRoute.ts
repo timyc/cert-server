@@ -7,5 +7,6 @@ module.exports = (app: Express) => {
     // NEED to use arrow function or else 'this' methods will be undefined (within the controller)
     router.get('/test', (req: Request, res: Response) => sController.test(req, res));
     router.post('/login', (req: Request, res: Response) => sController.login(req, res));
+    router.get('/search', (req: Request, res: Response) => sController.search(req, res));
     app.use('/sAPI', router);
 };

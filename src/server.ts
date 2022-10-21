@@ -10,7 +10,7 @@ import { NextFunction } from 'connect';
 
 const fbconfig = JSON.parse(fs.readFileSync(path.resolve(__dirname, `../configs/firebase.json`)).toString());
 firebase.initializeApp({credential: firebase.credential.cert(fbconfig)});
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, `../.env`) }); // need to do it like this so .env files work with ts-node
 
 const app: Express = express();
 const port = process.env.HTTP_PORT;
@@ -30,7 +30,7 @@ app.use(
   expressjwt({
     secret: process.env.JWT_SECRET || "poopysecret",
     algorithms: ["HS256"],
-  }).unless({ path: ["/sAPI/login"] }) // API routes to exclude from JWT verification, usually login routes
+  }).unless({ path: ["/sAPI/login", "/sAPI/search"] }) // API routes to exclude from JWT verification, usually login routes
 );
 
 // Students routes
