@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Request as JWTRequest } from 'express-jwt';
 import firebase from 'firebase-admin';
 import StudentsModel from '../models/StudentsModel';
 
@@ -27,7 +28,7 @@ export default class StudentsController {
             return res.status(500).json({ code: "internal_error", msg: "Failed to log into your account. Please try again." });
         });
     }
-    public async search(req: Request, res: Response) {
+    public search(req: Request, res: Response) {
         let lim = parseInt(req.query["limit"] as string) || 0;
         this.sModel.search(req.query.query as string, lim, (err?: Object, results?: Object) => {
             if (err) {
@@ -36,4 +37,16 @@ export default class StudentsController {
             return res.status(200).json(results);
         });
     }
+    public getProfileInfo(req: JWTRequest, res: Response) {
+        let uid = parseInt(req.auth?.user.id) || 0;
+        if (uid == 0) {
+            return res.status(500).json({ code: "internal_error", msg: "Failed to retrieve user data. Please re-login." }); 
+        }
+        this.sModel.profileInfo(uid, (err?: Object, results?: Object) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            return res.status(200).json(results);
+        });
+    } 
 }

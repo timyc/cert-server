@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import * as jwt from 'jsonwebtoken';
 import connection from '../helpers/DB'; 
@@ -35,8 +34,21 @@ export default class StudentsModel {
     }
     public search(ss: string, limit: number, result: Function) {
         let query = `SELECT id,name FROM universities WHERE name LIKE ? LIMIT ${limit}`;
-        console.log(ss);
         connection.query(query, [`%${ss}%`], (err, results) => {
+            if (err) {
+                return result({ code: "internal_error", msg: err.message}, null);
+            }
+            return result(null, { code: "success", msg: results});
+        });
+    }
+    public profileInfo(uid: number, result: Function) {
+        let query = `
+        SELECT universities.name, universities.image, users_universities.json 
+        FROM universities,users_universities
+        WHERE universities.id = users_universities.uni_id
+        AND users_universities.user_id = ?;
+        `;
+        connection.query(query, [uid], (err, results) => {
             if (err) {
                 return result({ code: "internal_error", msg: err.message}, null);
             }
