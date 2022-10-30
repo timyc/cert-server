@@ -13,6 +13,7 @@ module.exports = (app: Express) => {
     // POST routes
     router.post('/login', (req: Request, res: Response) => sController.login(req, res));
     router.post('/profile', (req: Request, res: Response) => sController.getProfileInfo(req, res));
+    router.post('/shibboleth', (req: Request, res: Response) => sController.shibbolethLogin(req, res));
     
     app.use('/sAPI', router);
 };

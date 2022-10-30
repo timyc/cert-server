@@ -55,4 +55,18 @@ export default class StudentsModel {
             return result(null, { code: "success", msg: results});
         });
     }
+    public shibbolethLogin(uni_id: number, user_id: number, result: Function) {
+        let query = `
+        SELECT * FROM universities WHERE id = ? LIMIT 1;
+        `;
+        connection.query(query, uni_id, (err, results: any) => {
+            if (err) {
+                return result({ code: "internal_error", msg: err.message}, null);
+            }
+            // Sign a temporary JWT that expires in 5 minutes
+            const token = jwt.sign({ user: user_id, university: uni_id }, process.env.JWT_SECRET || "poopysecret", { expiresIn: 5 * 60, algorithm: 'HS256'});
+            return result(null, { code: "success", msg: {token: token, url: results[0].auth_url}});
+        });
+    }
+
 }
