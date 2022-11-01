@@ -34,23 +34,23 @@ app.use(
 );
 
 // Students routes
-
 require('./routes/StudentsRoute')(app);
 
-// Return 404 for undefined routes
+// Internal routes
+require('./routes/InternalRoute')(app);
 
+// Return 404 for undefined routes
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({ code: "internal_error", msg: "Resource not found"});
 });
 
 // This is the general error handler
-
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
+  console.log(err);
   res.status(500).json({ code: "internal_error", msg: "Something went wrong. Please try again." }); // may be a bit cryptic, but it's better than nothing
 });
 
 // Start the server
-
 app.listen(port, () => {
   console.log(`[server]: Server is running at on port ${port}`);
 });
