@@ -64,7 +64,7 @@ export default class StudentsModel {
                 return result({ code: "internal_error", msg: err.message}, null);
             }
             // Sign a temporary JWT that expires in 5 minutes
-            const token = jwt.sign({ user: user_id, university: JSON.parse(results[0].json).secret }, process.env.JWT_SECRET || "poopysecret", { expiresIn: 5 * 60, algorithm: 'HS256'});
+            const token = jwt.sign({ user: user_id, university: uni_id }, process.env.JWT_SECRET || "poopysecret", { expiresIn: 5 * 60, algorithm: 'HS256'});
             return result(null, { code: "success", msg: {token: token, url: results[0].auth_url}});
         });
     }
