@@ -23,8 +23,13 @@ export default class StudentsModel {
                     if (err) {
                         return result({ code: "internal_error", msg: err.message}, null);
                     }
-                    const token = jwt.sign({ user: results[0] }, process.env.JWT_SECRET || "poopysecret", { algorithm: 'HS256'});
-                    return result(null, { code: "success", msg: {token: token, results: results}});
+                    connection.query(`SELECT * FROM users WHERE firebase_uid = ?`, [token.uid], (err, results2: any) => {
+                        if (err) {
+                            return result({ code: "internal_error", msg: err.message}, null);
+                        }
+                        const signedToken = jwt.sign({ user: results2[0] }, process.env.JWT_SECRET || "poopysecret", { algorithm: 'HS256'});
+                        return result(null, { code: "success", msg: {token: signedToken, results: results2}});
+                    });
                 });
             } else {
                 const token = jwt.sign({ user: results[0] }, process.env.JWT_SECRET || "poopysecret", { algorithm: 'HS256'});
