@@ -25,6 +25,9 @@ export default class InternalModel {
                     degree[y] = x[y];
                 }
             }
+            if (degree["holder"] == "") {
+                delete degree["holder"];
+            }
             degrees.push(degree);
         }
         connection.query(`SELECT * FROM users_universities WHERE user_id = ? AND uni_id = ?`, [user_id,uni_id], (err, results: any) => {
