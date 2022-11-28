@@ -109,7 +109,7 @@ export default class StudentsModel {
                 return result({ code: "internal_error", msg: err.message }, null);
             }
             if ((results as any).length === 0) {
-                const url = this.bin2hex(this.random_bytes(16));
+                const url = this.uniqid(this.bin2hex(this.random_bytes(16)));
                 connection.query(`INSERT INTO links (user, url) VALUES (?,?)`, [uid, url], (err, results) => {
                     if (err) {
                         return result({ code: "internal_error", msg: err.message }, null);
@@ -139,5 +139,37 @@ export default class StudentsModel {
             o += n.length < 2 ? '0' + n : n;
         }
         return o;
+    }
+    private uniqid (prefix: string, more_entropy: boolean = false) {
+        if (typeof prefix === 'undefined') {
+            prefix = '';
+        }
+        let retId;
+        let formatSeed = function (seed, reqWidth) {
+            seed = parseInt(seed, 10)
+                .toString(16); // to hex str
+            if (reqWidth < seed.length) { // so long we split
+                return seed.slice(seed.length - reqWidth);
+            }
+            if (reqWidth > seed.length) { // so short we pad
+                return Array(1 + (reqWidth - seed.length))
+                    .join('0') + seed;
+            }
+            return seed;
+        };
+        let uniqidSeed = Math.floor(Math.random() * 0x75bcd15);
+        uniqidSeed++;
+        // start with prefix, add current milliseconds hex string
+        retId = prefix;
+        retId += formatSeed((new Date().getTime() / 1000).toFixed(10), 8);
+        // add seed hex string
+        retId += formatSeed(uniqidSeed, 5);
+        if (more_entropy) {
+            // for more entropy we add a float lower to 10
+            retId += (Math.random() * 10)
+                .toFixed(8)
+                .toString();
+        }
+        return retId;
     }
 }
