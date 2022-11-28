@@ -1,6 +1,7 @@
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 import * as jwt from 'jsonwebtoken';
 import * as crypto from 'crypto';
+import { vsprintf } from 'sprintf-js';
 import connection from '../helpers/DB';
 
 export default class StudentsModel {
@@ -109,7 +110,9 @@ export default class StudentsModel {
                 return result({ code: "internal_error", msg: err.message }, null);
             }
             if ((results as any).length === 0) {
-                const url = this.uniqid(this.bin2hex(this.random_bytes(16)));
+                // generate a new link based on the php code
+                // uniqid(vsprintf( '%s%s%s%s%s%s%s%s', str_split(bin2hex(random_bytes(16)), 4) ));
+                const url = this.uniqid(vsprintf("%s%s%s%s%s%s%s%s", this.str_split(this.bin2hex(this.random_bytes(16)), 4)));
                 connection.query(`INSERT INTO links (user, url) VALUES (?,?)`, [uid, url], (err, results) => {
                     if (err) {
                         return result({ code: "internal_error", msg: err.message }, null);
@@ -127,6 +130,7 @@ export default class StudentsModel {
         });
 
     }
+    // private functions
     private random_bytes(size: number): string {
         return crypto.randomBytes(size).toString();
     }
@@ -140,7 +144,7 @@ export default class StudentsModel {
         }
         return o;
     }
-    private uniqid (prefix: string, more_entropy: boolean = false) {
+    private uniqid(prefix: string, more_entropy: boolean = false) {
         if (typeof prefix === 'undefined') {
             prefix = '';
         }
@@ -171,5 +175,21 @@ export default class StudentsModel {
                 .toString();
         }
         return retId;
+    }
+    private str_split(string: string, splitLength: number): string[] {
+        if (splitLength === null) {
+            splitLength = 1;
+        }
+        if (string === null || splitLength < 1) {
+            return [];
+        }
+        string += '';
+        const chunks: string[] = [];
+        let pos = 0
+        const len = string.length;
+        while (pos < len) {
+            chunks.push(string.slice(pos, pos += splitLength))
+        }
+        return chunks;
     }
 }
