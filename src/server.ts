@@ -31,7 +31,7 @@ app.use(
   expressjwt({
     secret: process.env.JWT_SECRET || "poopysecret",
     algorithms: ["HS256"],
-  }).unless({ path: ["/sAPI/login", "/sAPI/search"] }) // API routes to exclude from JWT verification, usually login routes
+  }).unless({ path: ["/sAPI/login", "/sAPI/search", "/sAPI/getSharedProfile"] }) // API routes to exclude from JWT verification, usually login routes
 );
 
 // Students routes

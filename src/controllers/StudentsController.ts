@@ -69,4 +69,38 @@ export default class StudentsController {
             return res.status(200).json(results);
         });
     }
+
+    public updateAvatar(req: JWTRequest, res: Response) {
+        let uid = parseInt(req.auth?.user.id) || 0;
+        if (uid == 0) {
+            return res.status(500).json({ code: "internal_error", msg: "Failed to retrieve user data. Please re-login." }); 
+        }
+        this.sModel.changeAvatar(uid, req.body["avatar"], (err?: Object, results?: Object) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            return res.status(200).json(results);
+        });
+    }
+    public getSharedProfile(req: Request, res: Response) {
+        let id = req.query["id"] || "";
+        this.sModel.retrieveProfileLink(id as string, (err?: Object, results?: Object) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            return res.status(200).json(results);
+        });
+    }
+    public getProfileLink(req: JWTRequest, res: Response) {
+        let uid = parseInt(req.auth?.user.id) || 0;
+        if (uid == 0) {
+            return res.status(500).json({ code: "internal_error", msg: "Failed to retrieve user data. Please re-login." }); 
+        }
+        this.sModel.createProfileLink(uid, (err?: Object, results?: Object) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            return res.status(200).json(results);
+        });
+    }
 }
