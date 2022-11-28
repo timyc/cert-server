@@ -9,11 +9,14 @@ module.exports = (app: Express) => {
     // GET routes
     router.get('/test', (req: Request, res: Response) => sController.test(req, res));
     router.get('/search', (req: Request, res: Response) => sController.search(req, res));
+    router.get('/getSharedProfile', (req: Request, res: Response) => sController.getSharedProfile(req, res));
 
     // POST routes
     router.post('/login', (req: Request, res: Response) => sController.login(req, res));
     router.post('/profile', (req: Request, res: Response) => sController.getProfileInfo(req, res));
     router.post('/shibboleth', (req: Request, res: Response) => sController.shibbolethLogin(req, res));
+    router.post('/updateAvatar', (req: Request, res: Response) => sController.updateAvatar(req, res));
+    router.post('/link', (req: Request, res: Response) => sController.getProfileLink(req, res));
     
     app.use('/sAPI', router);
 };

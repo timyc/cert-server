@@ -23,6 +23,7 @@
     "@types/body-parser": "^1.19.2",
     "@types/cors": "^2.8.12",
     "@types/jsonwebtoken": "^8.5.9",
+    "@types/sprintf-js": "^1.1.2",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -30,6 +31,7 @@
     "express-jwt": "^7.7.5",
     "firebase-admin": "^11.2.0",
     "jsonwebtoken": "^8.5.1",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "sprintf-js": "^1.1.2"
   }
 }

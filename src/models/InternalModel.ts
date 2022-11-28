@@ -27,7 +27,7 @@ export default class InternalModel {
             }
             degrees.push(degree);
         }
-        connection.query(`SELECT * FROM users_universities WHERE user_id = ? AND uni_id = ?`, [], (err, results: any) => {
+        connection.query(`SELECT * FROM users_universities WHERE user_id = ? AND uni_id = ?`, [user_id,uni_id], (err, results: any) => {
             if (err) {
                 return result({ code: "internal_error", msg: err.message}, null);
             }

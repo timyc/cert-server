@@ -1,6 +1,6 @@
 import express, { ErrorRequestHandler, Express, Request, Response } from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
+import bodyParser, { urlencoded } from 'body-parser';
 import dotenv from 'dotenv';
 import { expressjwt } from "express-jwt";
 import * as fs from 'fs';
@@ -17,7 +17,7 @@ const port = process.env.HTTP_PORT;
 const whitelist = JSON.parse(process.env.CORS_ORIGIN || "[]");
 app.use(cors({
     origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
+      if (!origin || whitelist.indexOf(origin) !== -1) {
         callback(null, true)
       } else {
         callback(new Error('Not allowed by CORS'))
@@ -25,12 +25,13 @@ app.use(cors({
     },
     credentials: true,
 })); // allow cross-origin requests
+app.use(urlencoded({ extended: true })); // support encoded bodies (for POST requests)
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(
   expressjwt({
     secret: process.env.JWT_SECRET || "poopysecret",
     algorithms: ["HS256"],
-  }).unless({ path: ["/sAPI/login", "/sAPI/search"] }) // API routes to exclude from JWT verification, usually login routes
+  }).unless({ path: ["/sAPI/login", "/sAPI/search", "/sAPI/getSharedProfile"] }) // API routes to exclude from JWT verification, usually login routes
 );
 
 // Students routes
