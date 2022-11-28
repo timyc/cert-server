@@ -39,6 +39,9 @@ require('./routes/StudentsRoute')(app);
 // Internal routes
 require('./routes/InternalRoute')(app);
 
+//Platform routes
+require('./routes/PlatformRoute')(app);
+
 // Return 404 for undefined routes
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({ code: "internal_error", msg: "Resource not found"});
