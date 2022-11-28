@@ -132,7 +132,7 @@ export default class StudentsModel {
     }
     // private functions
     private random_bytes(size: number): string {
-        return crypto.randomBytes(size).toString();
+        return crypto.randomBytes(size).toString("binary");
     }
     private bin2hex(s: string) {
         let i, l, o = '', n;
